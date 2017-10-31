@@ -3,6 +3,8 @@ package main;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -12,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import static main.Constants.GECKO_PATH;
 
@@ -22,10 +25,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.firefox.marionette", GECKO_PATH);
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        capabilities.setCapability("marionette", true);
-        WebDriver driver = new FirefoxDriver(capabilities);
+        System.setProperty("webdriver.chrome.driver", GECKO_PATH);
+        //DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        //capabilities.setCapability("marionette", true);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        WebDriver driver = new ChromeDriver();
 
         driver.get("https://www.elcorteingles.es");
         WebElement buscador = driver.findElement(By.id("search-box"));
@@ -40,7 +45,22 @@ public class Main {
         WebElement bosch = leftNav.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[5]/a"));
         bosch.click();
 
-        WebElement num = driver.findElement(By.id("product-list-total"));
+        waitForPage = new WebDriverWait(driver, 10);
+        waitForPage.withTimeout(2, TimeUnit.SECONDS);
+
+        WebElement cafs = driver.findElement(By.id("product-list"));
+
+        for (WebElement element : driver.findElements(By.xpath(".//*[@id='product-list']/ul/li[2]/div/div[2]/div[1]/h3/a[1]"))) {
+            System.out.println(element.getAttribute("title"));
+        }
+
+        /*
+        for(WebElement element: cafs.findElements(By.className("info"))) {
+            WebElement c = element.findElement(By.xpath(".//*[@id='product-list']/ul/li[2]/div/div[2]/div[1]/h3/a[1]"));
+
+            String price = element.findElement(By.className("product-price ")).toString();
+            System.out.println(c + " \n" + price);
+        }*/
 
 
         //driver.quit();
