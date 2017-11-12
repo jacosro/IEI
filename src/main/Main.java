@@ -25,12 +25,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", GECKO_PATH);
-        //DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        //capabilities.setCapability("marionette", true);
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        WebDriver driver = new ChromeDriver();
+        WebDriver driver = Constants.getDriver();
 
         driver.get("https://www.elcorteingles.es");
         WebElement buscador = driver.findElement(By.id("search-box"));
