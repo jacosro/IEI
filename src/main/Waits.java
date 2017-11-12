@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.function.Function;
 
-public class Functions {
+public class Waits {
 
     public static void waitForPageLoad(WebDriver wdriver) {
         WebDriverWait wait = new WebDriverWait(wdriver, 60);
@@ -17,7 +17,7 @@ public class Functions {
         wait.until(pageLoaded);
     }
 
-    public static void WaitForAjax(WebDriver driver) {
+    public static void waitForAjax(WebDriver driver) {
         boolean ajaxIsComplete;
         do {
             try { Thread.sleep(100); } catch (InterruptedException ignored) {}
