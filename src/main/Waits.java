@@ -4,9 +4,14 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class Waits {
+
+    public static void until(WebDriver driver, long timeout, Function<WebDriver, Object> function) {
+        new WebDriverWait(driver, timeout).until(function);
+    }
 
     public static void waitForPageLoad(WebDriver wdriver) {
         WebDriverWait wait = new WebDriverWait(wdriver, 60);
