@@ -1,10 +1,12 @@
 package main;
 
-import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.json.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.Wait;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +15,25 @@ import java.util.List;
 /**
  * Created by jacosro on 25/10/17.
  */
-public class Main {
+public class Main extends Application {
 
     static WebDriver driver;
     final static String [] marcas = {"De'Longhi", "Krups", "Philips", "Saeco", "Severin", "Bosch", "Ufesa", "Taurus", "Jura"};
 
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("../interface/VentaCafeteras.fxml"));
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 500, 350));
+        primaryStage.setMinHeight(350);
+        primaryStage.setMaxHeight(350);
+        primaryStage.setMinWidth(500);
+        primaryStage.setMaxWidth(500);
+        primaryStage.show();
+    }
+
     public static void main(String[] args) {
+        launch(args);
         driver = Constants.getDriver();
 
         driver.get("https://www.elcorteingles.es");
@@ -37,17 +52,6 @@ public class Main {
         }
         driver.findElement(By.id("mdl-url-filter")).click();
 
-        //waitForPage.until(ExpectedConditions.presenceOfElementLocated(By.id("left-navigation")));
-        //WebDriverWait waitForPage = new WebDriverWait(driver, 10);
-        /*
-        WebElement bosch = driver.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[5]/a"));
-        bosch.click();
-
-        Waits.waitForPageLoad(driver);
-        */
-
-        /*WebElement deLongui = driver.findElement(By.xpath("./*//*[@id='filters']/li[2]/ul[1]/li[8]/a"));
-        deLongui.click();*/
 
         Waits.waitForPageLoad(driver);
 
@@ -78,7 +82,7 @@ public class Main {
                     String price = elementPrice.getText();
 
                     Cafeter c = new Cafeter(jsonObj.get("name").toString(), jsonObj.get("brand").toString(), price);
-                    System.out.println(c);
+                    c.setCorteIngles(true);
                     seleccion.add(c);
                 }
                 WebElement nextPage = driver.findElement(By.xpath(".//*[@id='product-list']/div[3]/ul/li[5]/a"));
@@ -91,7 +95,6 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        //System.out.println(seleccion);
         return products;
     }
 
