@@ -5,11 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.json.*;
+import main.util.Constants;
+import main.web.CorteIngles;
+import main.web.Web;
 import org.openqa.selenium.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

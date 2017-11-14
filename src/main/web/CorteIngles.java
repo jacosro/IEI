@@ -1,9 +1,10 @@
-package main;
+package main.web;
 
+import main.Cafeter;
+import main.util.Waits;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.Wait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,6 @@ public class CorteIngles extends Web {
         return ourInstance;
     }
 
-    public WebDriver webDriver;
-
     private CorteIngles() {
         super();
     }
@@ -25,12 +24,13 @@ public class CorteIngles extends Web {
     public void setWebDriver(WebDriver driver) {
         webDriver = driver;
         webDriver.get(URL);
-        state = PAGE_LOADED;
+        state = INIT;
     }
 
     @Override
     public void webSearch(String search) {
         super.webSearch(search);
+
         WebElement buscador = webDriver.findElement(By.id("search-box"));
         buscador.sendKeys(search + Keys.ENTER);
         Waits.waitForPageLoad(webDriver);
@@ -40,13 +40,19 @@ public class CorteIngles extends Web {
     @Override
     public void setFilters(String filter) {
         super.setFilters(filter);
+
         webDriver.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[11]/a/span")).click();
         WebElement filterSearch = webDriver.findElement(By.xpath(".//*[@id='mdl-input']"));
 
-        //Selección de filtros
-        for (String marca : MARCAS) {
-            filterSearch.sendKeys(marca + Keys.ENTER);
+        if ("all".equals(filter)) {
+            //Selección de filtros
+            for (String marca : MARCAS) {
+                filterSearch.sendKeys(marca + Keys.ENTER);
+            }
+        } else {
+            filterSearch.sendKeys(filter + Keys.ENTER);
         }
+
         webDriver.findElement(By.id("mdl-url-filter")).click();
         Waits.waitForPageLoad(webDriver);
         state = FILTER_SET;
@@ -55,11 +61,12 @@ public class CorteIngles extends Web {
     @Override
     public List<Cafeter> findProducts() {
         super.findProducts();
+
         WebElement totalLabel = webDriver.findElement(By.xpath(".//*[@id='product-list-total']"));
         String label = totalLabel.getText();
-        int max = Integer.parseInt(label.split("\\s")[0]);
+        int max = Integer.parseInt(label.split("\\s")[0]); // XX articulos
 
-        ArrayList<Cafeter> seleccion = new ArrayList<Cafeter>();
+        List<Cafeter> seleccion = new ArrayList<>(max);
 
         while (seleccion.size() < max) {
             try {
@@ -86,7 +93,8 @@ public class CorteIngles extends Web {
             }
         }
         state = GOT_PRODUCTS;
-        return seleccion;
+        products = seleccion;
+        return products;
     }
 
 

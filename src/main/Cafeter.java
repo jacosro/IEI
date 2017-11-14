@@ -9,6 +9,7 @@ public class Cafeter {
     private String precio;
     private boolean corteIngles;
     private boolean mediaMarkt;
+    private String url;
 
     public Cafeter(String modelo, String marca, String precio) {
         this.modelo = modelo;
@@ -56,6 +57,14 @@ public class Cafeter {
 
     public void setMediaMarkt(boolean mediaMarkt) {
         this.mediaMarkt = mediaMarkt;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
