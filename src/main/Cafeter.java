@@ -60,6 +60,6 @@ public class Cafeter {
 
     @Override
     public String toString() {
-        return modelo + "\t " + marca + "\t " + " " + precio;
+        return "{" + modelo + ", " + marca + ", " + precio + "}";
     }
 }
