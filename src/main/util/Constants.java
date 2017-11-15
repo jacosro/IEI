@@ -1,4 +1,3 @@
-
 package main.util;
 
 import org.openqa.selenium.WebDriver;
@@ -7,7 +6,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static main.util.Constants.Browser.CHROME;
 import static main.util.Constants.Browser.FIREFOX;
 
 /**
@@ -17,9 +15,9 @@ public class Constants {
     enum Browser {
         CHROME, FIREFOX;
     }
-    static final Browser BROWSER = CHROME;
+    static final Browser BROWSER = FIREFOX;
 
-    static final String GECKO_PATH = "/Users/RaulCoroban/Documents/Class/IEI/chromedriver";
+    static final String GECKO_PATH = "/home/jacosro/Desktop/geckodriver";
 
     public static WebDriver getDriver() {
         WebDriver driver;

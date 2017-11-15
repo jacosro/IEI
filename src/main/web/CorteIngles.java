@@ -60,18 +60,23 @@ public class CorteIngles extends Web {
 
             webDriver.findElement(By.id("mdl-url-filter")).click();
             Waits.waitForPageLoad(webDriver);
-            state = FILTER_SET;
         } catch (NoSuchElementException e) {
             Map<String, By> brands = gatherBrands();
+
+            System.out.println(filters);
+            System.out.println(brands.keySet());
 
             for (String filt : filters) {
                 for (Map.Entry<String, By> entry : brands.entrySet()) {
                     if (Objects.equals(entry.getKey(), filt)) {
                         webDriver.findElement(entry.getValue()).click();
                         Waits.waitForPageLoad(webDriver);
+                        break;
                     }
                 }
             }
+        } finally {
+            state = FILTER_SET;
         }
     }
 
@@ -84,6 +89,7 @@ public class CorteIngles extends Web {
                 String title = webElement.getAttribute("title");
                 res.put(title, by);
             } catch (NoSuchElementException e) {
+                System.out.println(res.keySet());
                 return res;
             }
         }
