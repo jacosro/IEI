@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import main.util.Constants;
 import main.web.CorteIngles;
+import main.web.Fnac;
 import main.web.Web;
 import org.openqa.selenium.WebDriver;
 
@@ -67,7 +68,7 @@ public class Controller {
                 tableViewArticulos.getItems().clear();
 
                 if(checkBoxBosch.isSelected()) marcas.add("Bosch");
-                if(checkBoxDeLonghi.isSelected()) marcas.add("DeLonghi");
+                if(checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
                 if(checkBoxJura.isSelected()) marcas.add("Jura");
                 if(checkBoxKrups.isSelected()) marcas.add("Krups");
                 if(checkBoxPhilips.isSelected()) marcas.add("Philips");
@@ -93,7 +94,12 @@ public class Controller {
                 }
 
                 if(checkBoxFnac.isSelected()) {
+                    Web fnac = Fnac.getInstance();
 
+                    fnac.setWebDriver(driver);
+                    fnac.webSearch(selectedArticulo);
+                    //fnac.setFilters();
+                    products = fnac.findProducts();
                 }
 
                 driver.close();
