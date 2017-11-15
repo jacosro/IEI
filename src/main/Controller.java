@@ -74,7 +74,7 @@ public class Controller {
 
                 corteIngles.setWebDriver(driver);
                 corteIngles.webSearch(selectedArticulo);
-                corteIngles.setFilters(marcas.toArray(new String[marcas.size()]));
+                corteIngles.setFilters(marcas);
                 List<Cafeter> products = corteIngles.findProducts();
 
                 System.out.println(products);

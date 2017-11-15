@@ -5,9 +5,10 @@ import main.util.Waits;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.support.ui.Wait;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CorteIngles extends Web {
 
@@ -40,25 +41,52 @@ public class CorteIngles extends Web {
 
     @Override
     public void setFilters(String... filter) {
-        super.setFilters(filter);
+        setFilters(Arrays.asList(filter));
+    }
 
-        webDriver.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[11]/a/span")).click();
-        WebElement filterSearch = webDriver.findElement(By.xpath(".//*[@id='mdl-input']"));
+    @Override
+    public void setFilters(List<String> filters) {
+        super.setFilters(filters);
 
-        if ("all".equals(filter)) {
-            //Selección de filtros
-            for (String marca : MARCAS) {
+        filters.forEach(Objects::requireNonNull);
+
+        try {
+            WebElement mostrarMas = webDriver.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[11]/a/span")); // Puede estar o no
+            WebElement filterSearch = webDriver.findElement(By.xpath(".//*[@id='mdl-input']"));
+
+            for (String marca : filters) {
                 filterSearch.sendKeys(marca + Keys.ENTER);
             }
-        } else {
-            for (String marca : filter) {
-                filterSearch.sendKeys(marca + Keys.ENTER);
+
+            webDriver.findElement(By.id("mdl-url-filter")).click();
+            Waits.waitForPageLoad(webDriver);
+            state = FILTER_SET;
+        } catch (NoSuchElementException e) {
+            Map<String, By> brands = gatherBrands();
+
+            for (String filt : filters) {
+                for (Map.Entry<String, By> entry : brands.entrySet()) {
+                    if (Objects.equals(entry.getKey(), filt)) {
+                        webDriver.findElement(entry.getValue()).click();
+                        Waits.waitForPageLoad(webDriver);
+                    }
+                }
             }
         }
+    }
 
-        webDriver.findElement(By.id("mdl-url-filter")).click();
-        Waits.waitForPageLoad(webDriver);
-        state = FILTER_SET;
+    private Map<String, By> gatherBrands() {
+        Map<String, By> res = new HashMap<>();
+        for (int i = 1; ;i++) {
+            try {
+                By by = By.xpath(".//*[@id='filters']/li[2]/ul/li[" + i + "]/a");
+                WebElement webElement = webDriver.findElement(by);
+                String title = webElement.getAttribute("title");
+                res.put(title, by);
+            } catch (NoSuchElementException e) {
+                return res;
+            }
+        }
     }
 
     @Override

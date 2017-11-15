@@ -4,6 +4,7 @@ import main.Cafeter;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class Web {
@@ -31,6 +32,11 @@ public abstract class Web {
     }
 
     public void setFilters(String... filter) {
+        if (state < SEARCH_COMPLETE)
+            throw new RuntimeException("Illegal state: " + state);
+    }
+
+    public void setFilters(List<String> filters) {
         if (state < SEARCH_COMPLETE)
             throw new RuntimeException("Illegal state: " + state);
     }
