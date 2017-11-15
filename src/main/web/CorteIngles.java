@@ -13,6 +13,7 @@ public class CorteIngles extends Web {
 
     private static final String URL = "https://www.elcorteingles.es";
     private static CorteIngles ourInstance = new CorteIngles();
+
     public static CorteIngles getInstance() {
         return ourInstance;
     }
@@ -38,7 +39,7 @@ public class CorteIngles extends Web {
     }
 
     @Override
-    public void setFilters(String filter) {
+    public void setFilters(String... filter) {
         super.setFilters(filter);
 
         webDriver.findElement(By.xpath(".//*[@id='filters']/li[2]/ul[1]/li[11]/a/span")).click();
@@ -50,7 +51,9 @@ public class CorteIngles extends Web {
                 filterSearch.sendKeys(marca + Keys.ENTER);
             }
         } else {
-            filterSearch.sendKeys(filter + Keys.ENTER);
+            for (String marca : filter) {
+                filterSearch.sendKeys(marca + Keys.ENTER);
+            }
         }
 
         webDriver.findElement(By.id("mdl-url-filter")).click();
@@ -70,7 +73,7 @@ public class CorteIngles extends Web {
 
         while (seleccion.size() < max) {
             try {
-                for (int i = 1;i < 25;i++) {
+                for (int i = 1; i < 25; i++) {
                     WebElement element = webDriver.findElement(By.xpath("./*//*[@id='product-list']/ul/li[" + i + "]/span"));
                     WebElement elementPrice = webDriver.findElement(By.xpath("./*//*[@id='product-list']/ul/li[" + i + "]/div/div[2]/div[2]/span"));
                     String json = element.getAttribute("data-json");
@@ -96,6 +99,4 @@ public class CorteIngles extends Web {
         products = seleccion;
         return products;
     }
-
-
 }

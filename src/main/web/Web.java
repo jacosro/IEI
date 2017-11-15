@@ -30,7 +30,7 @@ public abstract class Web {
             throw new RuntimeException("Illegal state: " + state);
     }
 
-    public void setFilters(String filter) {
+    public void setFilters(String... filter) {
         if (state < SEARCH_COMPLETE)
             throw new RuntimeException("Illegal state: " + state);
     }
