@@ -108,8 +108,11 @@ public class CorteIngles extends Web {
                     JSONObject jsonObj = new JSONObject(json);
 
                     String price = elementPrice.getText();
+                    if(price.isEmpty()) price = "No disponible";
 
-                    Cafeter c = new Cafeter(jsonObj.get("name").toString(), jsonObj.get("brand").toString(), price);
+                    Cafeter c = new Cafeter(jsonObj.get("name").toString(), jsonObj.get("brand").toString());
+                    //c.setPrecioF(price);
+                    c.setPrecioCI(price);
                     c.setCorteIngles(true);
                     seleccion.add(c);
                 }

@@ -23,11 +23,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../interface/VentaCafeteras.fxml"));
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 600, 350));
-        primaryStage.setMinHeight(350);
+        primaryStage.setScene(new Scene(root, 1000, 400));
+        /*primaryStage.setMinHeight(350);
         primaryStage.setMaxHeight(350);
         primaryStage.setMinWidth(600);
-        primaryStage.setMaxWidth(600);
+        primaryStage.setMaxWidth(600);*/
         primaryStage.show();
     }
 

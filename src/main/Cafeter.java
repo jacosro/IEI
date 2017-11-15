@@ -1,46 +1,76 @@
 package main;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * Created by RaulCoroban on 13/11/2017.
  */
 public class Cafeter {
-    private String modelo;
-    private String marca;
-    private String precio;
+    private SimpleStringProperty modelo;
+    private SimpleStringProperty marca;
+    private SimpleStringProperty precioCI;
+    private SimpleStringProperty precioF;
+
     private boolean corteIngles;
     private boolean mediaMarkt;
     private String url;
 
-    public Cafeter(String modelo, String marca, String precio) {
-        this.modelo = modelo;
-        this.marca = marca;
-        this.precio = precio;
+    public Cafeter(String modelo, String marca) {
+        this.modelo = new SimpleStringProperty(modelo);
+        this.marca = new SimpleStringProperty(marca);
+        this.precioCI = new SimpleStringProperty("-");
+        this.precioF = new SimpleStringProperty("-");
+
         this.corteIngles = false;
         this.mediaMarkt = false;
     }
 
     public String getModelo() {
+        return modelo.get();
+    }
+
+    public SimpleStringProperty modeloProperty() {
         return modelo;
     }
 
     public void setModelo(String modelo) {
-        this.modelo = modelo;
+        this.modelo.set(modelo);
     }
 
     public String getMarca() {
+        return marca.get();
+    }
+
+    public SimpleStringProperty marcaProperty() {
         return marca;
     }
 
     public void setMarca(String marca) {
-        this.marca = marca;
+        this.marca.set(marca);
     }
 
-    public String getPrecio() {
-        return precio;
+    public String getPrecioCI() {
+        return precioCI.get();
     }
 
-    public void setPrecio(String precio) {
-        this.precio = precio;
+    public SimpleStringProperty precioCIProperty() {
+        return precioCI;
+    }
+
+    public void setPrecioCI(String precioCI) {
+        this.precioCI.set(precioCI);
+    }
+
+    public String getPrecioF() {
+        return precioF.get();
+    }
+
+    public SimpleStringProperty precioFProperty() {
+        return precioF;
+    }
+
+    public void setPrecioF(String precioF) {
+        this.precioF.set(precioF);
     }
 
     public boolean isCorteIngles() {
@@ -69,6 +99,6 @@ public class Cafeter {
 
     @Override
     public String toString() {
-        return "{" + modelo + ", " + marca + ", " + precio + "}";
+        return "{" + modelo + ", " + marca + ", " + precioCI + " " + precioF + "}";
     }
 }

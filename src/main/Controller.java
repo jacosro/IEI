@@ -1,11 +1,11 @@
 package main;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import main.util.Constants;
 import main.web.CorteIngles;
 import main.web.Web;
@@ -43,20 +43,28 @@ public class Controller {
     CheckBox checkBoxCorteIngles;
 
     @FXML
-    CheckBox checkBoxMediaMarkt;
+    CheckBox checkBoxFnac;
 
     @FXML
     Button buttonBuscar;
+
+    @FXML
+    TableView<Cafeter> tableViewArticulos = new TableView<Cafeter>();
 
     @FXML
     public void initialize() {
         List<String> marcas = new ArrayList<String>();
         comboBoxArticulo.getItems().addAll("Cafeteras automáticas", "Cafeteras espresso manuales", "Cafeteras goteo");
 
+        startTable();
+
         buttonBuscar.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
+                List<Cafeter> products;
+
+                tableViewArticulos.getItems().clear();
 
                 if(checkBoxBosch.isSelected()) marcas.add("Bosch");
                 if(checkBoxDeLonghi.isSelected()) marcas.add("DeLonghi");
@@ -68,23 +76,56 @@ public class Controller {
                 if(checkBoxUfesa.isSelected()) marcas.add("Ufesa");
                 if(checkBoxTaurus.isSelected()) marcas.add("Taurus");
 
+
                 WebDriver driver = Constants.getDriver();
 
-                Web corteIngles = CorteIngles.getInstance();
+                if(checkBoxCorteIngles.isSelected()) {
+                    Web corteIngles = CorteIngles.getInstance();
 
-                corteIngles.setWebDriver(driver);
-                corteIngles.webSearch(selectedArticulo);
-                corteIngles.setFilters(marcas);
-                List<Cafeter> products = corteIngles.findProducts();
+                    corteIngles.setWebDriver(driver);
+                    corteIngles.webSearch(selectedArticulo);
+                    corteIngles.setFilters(marcas);
+                    products = corteIngles.findProducts();
 
-                System.out.println(products);
-                System.out.println(products.size());
+                    for (Cafeter c: products) {
+                        tableViewArticulos.getItems().add(c);
+                    }
+                }
+
+                if(checkBoxFnac.isSelected()) {
+
+                }
 
                 driver.close();
             }
         });
 
 
+    }
+
+    private void startTable() {
+        tableViewArticulos.setEditable(true);
+        Cafeter c = new Cafeter("Espresso GOteante y suputamadre", "De'Corti");
+
+        ObservableList<Cafeter> data = FXCollections.observableArrayList();
+
+        TableColumn firstNameCol = new TableColumn("Modelo");
+        firstNameCol.setMinWidth(300);
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<Cafeter, String>("modelo"));
+
+        TableColumn secondNameCol = new TableColumn("Marca");
+        secondNameCol.setMinWidth(150);
+        secondNameCol.setCellValueFactory(new PropertyValueFactory<Cafeter, String>("marca"));
+
+        TableColumn fourthNameCol = new TableColumn("Fnac");
+        fourthNameCol.setMinWidth(100);
+        fourthNameCol.setCellValueFactory(new PropertyValueFactory<Cafeter, String>("precioF"));
+
+        TableColumn fifthNameCol = new TableColumn("El Corte Inglés");
+        fifthNameCol.setMinWidth(100);
+        fifthNameCol.setCellValueFactory(new PropertyValueFactory<Cafeter, String>("precioCI"));
+
+        tableViewArticulos.getColumns().addAll(firstNameCol, secondNameCol, fourthNameCol, fifthNameCol);
     }
 
     @FXML
