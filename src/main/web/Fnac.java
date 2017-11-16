@@ -5,10 +5,9 @@ import main.util.Waits;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +51,33 @@ public class Fnac extends Web {
 
     public void setFilters(List<String> filters) {
         super.setFilters(filters);
+
+        Map<String, By> brands = gatherBrands();
+        for(String f : filters) {
+            for(Map.Entry<String, By> b : brands.entrySet()) {
+                if(Objects.equals(b.getKey(),f )) {
+                    webDriver.findElement(b.getValue()).click();
+                    Waits.waitForPageLoad(webDriver);
+                    break;
+                }
+            }
+        }
+        state = FILTER_SET;
+    }
+
+    private Map<String, By> gatherBrands() {
+        Map<String, By> res = new HashMap<>();
+        for (int i = 1; ;i++) {
+            try {
+                By by = By.xpath(".//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/div/a[" + i + "]/label");
+                WebElement webElement = webDriver.findElement(by);
+                if (webElement.getAttribute("class").equals("Filters-choice isActive")) {
+                    res.put(webElement.getAttribute("title"), by);
+                }
+            } catch (NoSuchElementException e) {
+                return res;
+            }
+        }
     }
 
     @Override
@@ -72,12 +98,13 @@ public class Fnac extends Web {
         while (seleccion.size() < max) {
             try {
                 for (int i = 1; i < 5; i++) {
-                    webDriver.get(webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[1]/a")).getAttribute("href"));
+                    String url = webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[1]/a")).getAttribute("href");
+                    webDriver.get(url);
                     Waits.waitForPageLoad(webDriver);
 
                     WebElement elementName = webDriver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/h1/span"));
                     List<WebElement> elementMark = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[1]/span[2]/span"));
-                    List<WebElement> elementEAN = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[3]/span[2]/span"));
+                    List<WebElement> elementEAN = webDriver.findElements(By.className("Feature-desc"));
                     WebElement elementPrice = webDriver.findElement(By.className("product-price"));
                     String price = elementPrice.getText().replaceAll("\\s","");
 

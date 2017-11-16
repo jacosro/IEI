@@ -5,8 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import main.util.Constants;
 import main.web.CorteIngles;
 import main.web.Fnac;
@@ -43,7 +45,6 @@ public class Controller {
 
     @FXML
     CheckBox checkBoxCorteIngles;
-
     @FXML
     CheckBox checkBoxFnac;
 
@@ -60,8 +61,12 @@ public class Controller {
 
         startTable();
 
-        buttonBuscar.setOnAction(event -> {
+        buttonBuscar.setOnAction((javafx.event.ActionEvent event) -> {
             tableViewArticulos.getItems().clear();
+            List<Node> nodes = new ArrayList<>();
+            addNodes(nodes);
+            disableUI(nodes, true);
+
             String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
 
             if(checkBoxBosch.isSelected()) marcas.add("Bosch");
@@ -79,9 +84,15 @@ public class Controller {
             tableViewArticulos.getItems().addAll(map.values());
 
             Constants.getDriver().close();
+            disableUI(nodes, false);
         });
 
+    }
 
+    private void disableUI(List<Node> nodes, boolean tf) {
+        for(Node n : nodes) {
+            n.setDisable(tf);
+        }
     }
 
     private void startTable() {
@@ -106,9 +117,20 @@ public class Controller {
         tableViewArticulos.getColumns().addAll(firstNameCol, secondNameCol, fourthNameCol, fifthNameCol);
     }
 
-    @FXML
-    void buttonBuscarClick(ActionEvent event) {
-        System.out.println("Hello World!");
+    private void addNodes(List<Node> nodes) {
+        nodes.add(checkBoxBosch);
+        nodes.add(checkBoxCorteIngles);
+        nodes.add(checkBoxDeLonghi);
+        nodes.add(checkBoxFnac);
+        nodes.add(checkBoxJura);
+        nodes.add(checkBoxKrups);
+        nodes.add(checkBoxPhilips);
+        nodes.add(checkBoxSaeco);
+        nodes.add(checkBoxSeverin);
+        nodes.add(checkBoxTaurus);
+        nodes.add(checkBoxUfesa);
+        nodes.add(buttonBuscar);
+        nodes.add(comboBoxArticulo);
     }
 
 
