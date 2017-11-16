@@ -11,8 +11,10 @@ public class Cafeter {
     private SimpleStringProperty precioCI;
     private SimpleStringProperty precioF;
 
+    private String ean;
+
     private boolean corteIngles;
-    private boolean mediaMarkt;
+    private boolean fnac;
     private String url;
 
     public Cafeter(String modelo, String marca) {
@@ -22,7 +24,20 @@ public class Cafeter {
         this.precioF = new SimpleStringProperty("-");
 
         this.corteIngles = false;
-        this.mediaMarkt = false;
+        this.fnac = false;
+    }
+
+    public Cafeter(String modelo, String marca, String ean) {
+        this(modelo, marca);
+        this.ean = ean;
+    }
+
+    public String getEan() {
+        return ean;
+    }
+
+    public void setEan(String ean) {
+        this.ean = ean;
     }
 
     public String getModelo() {
@@ -81,12 +96,12 @@ public class Cafeter {
         this.corteIngles = corteIngles;
     }
 
-    public boolean isMediaMarkt() {
-        return mediaMarkt;
+    public boolean isFnac() {
+        return fnac;
     }
 
-    public void setMediaMarkt(boolean mediaMarkt) {
-        this.mediaMarkt = mediaMarkt;
+    public void setFnac(boolean fnac) {
+        this.fnac = fnac;
     }
 
     public String getUrl() {
@@ -99,6 +114,6 @@ public class Cafeter {
 
     @Override
     public String toString() {
-        return "{" + modelo + ", " + marca + ", " + precioCI + " " + precioF + "}";
+        return "{" + modelo + ", " + marca + ", " + precioCI + " " + precioF +  " " + ean + "}";
     }
 }

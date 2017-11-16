@@ -54,7 +54,7 @@
                   <HBox alignment="CENTER" spacing="50.0">
                      <children>
                         <CheckBox fx:id="checkBoxCorteIngles" mnemonicParsing="false" text="El Corte Ingles" />
-                        <CheckBox fx:id="checkBoxFnac" mnemonicParsing="false" text="Media Markt" />
+                        <CheckBox fx:id="checkBoxFnac" mnemonicParsing="false" text="Fnac" />
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />

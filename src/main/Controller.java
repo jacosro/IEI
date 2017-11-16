@@ -8,12 +8,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import main.util.Constants;
 import main.web.CorteIngles;
+import main.web.Fnac;
 import main.web.Web;
 import org.openqa.selenium.WebDriver;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Controller {
 
@@ -62,12 +62,15 @@ public class Controller {
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
-                List<Cafeter> products;
+                List<Cafeter> productsCorteIngles = new ArrayList<>();
+                List<Cafeter> productsFnac = new ArrayList<>();
+                List<Cafeter> products = new ArrayList<>();
+                Map<String, Cafeter> cafeterMap = new HashMap<>();
 
                 tableViewArticulos.getItems().clear();
 
                 if(checkBoxBosch.isSelected()) marcas.add("Bosch");
-                if(checkBoxDeLonghi.isSelected()) marcas.add("DeLonghi");
+                if(checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
                 if(checkBoxJura.isSelected()) marcas.add("Jura");
                 if(checkBoxKrups.isSelected()) marcas.add("Krups");
                 if(checkBoxPhilips.isSelected()) marcas.add("Philips");
@@ -79,22 +82,37 @@ public class Controller {
 
                 WebDriver driver = Constants.getDriver();
 
-                if(checkBoxCorteIngles.isSelected()) {
+                if (checkBoxCorteIngles.isSelected()) {
                     Web corteIngles = CorteIngles.getInstance();
 
                     corteIngles.setWebDriver(driver);
                     corteIngles.webSearch(selectedArticulo);
                     corteIngles.setFilters(marcas);
-                    products = corteIngles.findProducts();
-
-                    for (Cafeter c: products) {
-                        tableViewArticulos.getItems().add(c);
+                    productsCorteIngles = corteIngles.findProducts();
+                    for(Cafeter c: productsCorteIngles) {
+                        cafeterMap.put(c.getEan(), c);
                     }
+                    System.out.println(productsCorteIngles);
                 }
 
-                if(checkBoxFnac.isSelected()) {
+                if (checkBoxFnac.isSelected()) {
+                    Web fnac = Fnac.getInstance();
 
+                    fnac.setWebDriver(driver);
+                    fnac.webSearch(selectedArticulo);
+                    fnac.setFilters();
+                    productsFnac = fnac.findProducts();
+                    for (Cafeter c: productsFnac) {
+                        cafeterMap.put(c.getEan(), c);
+                    }
+                    System.out.println(productsFnac);
                 }
+
+
+
+
+
+                tableViewArticulos.getItems().addAll(cafeterMap.values());
 
                 driver.close();
             }

@@ -63,9 +63,6 @@ public class CorteIngles extends Web {
         } catch (NoSuchElementException e) {
             Map<String, By> brands = gatherBrands();
 
-            System.out.println(filters);
-            System.out.println(brands.keySet());
-
             for (String filt : filters) {
                 for (Map.Entry<String, By> entry : brands.entrySet()) {
                     if (Objects.equals(entry.getKey(), filt)) {
@@ -89,7 +86,6 @@ public class CorteIngles extends Web {
                 String title = webElement.getAttribute("title");
                 res.put(title, by);
             } catch (NoSuchElementException e) {
-                System.out.println(res.keySet());
                 return res;
             }
         }
@@ -116,7 +112,7 @@ public class CorteIngles extends Web {
                     String price = elementPrice.getText();
                     if(price.isEmpty()) price = "No disponible";
 
-                    Cafeter c = new Cafeter(jsonObj.get("name").toString(), jsonObj.get("brand").toString());
+                    Cafeter c = new Cafeter(jsonObj.get("name").toString(), jsonObj.get("brand").toString(), jsonObj.get("gtin").toString());
                     //c.setPrecioF(price);
                     c.setPrecioCI(price);
                     c.setCorteIngles(true);
