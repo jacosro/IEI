@@ -69,7 +69,7 @@ public class Fnac extends Web {
         Map<String, By> res = new HashMap<>();
         for (int i = 1; ;i++) {
             try {
-                By by = By.xpath(".//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/div/a[" + i + "]/label");
+                By by = By.xpath(".//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/div/a[" + i + "]");
                 WebElement webElement = webDriver.findElement(by);
                 if (webElement.getAttribute("class").equals("Filters-choice isActive")) {
                     res.put(webElement.getAttribute("title"), by);

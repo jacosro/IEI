@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,7 +18,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.awt.event.ActionEvent;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 public class Controller {
 
@@ -69,20 +70,18 @@ public class Controller {
 
             String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
 
-            if(checkBoxBosch.isSelected()) marcas.add("Bosch");
-            if(checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
-            if(checkBoxJura.isSelected()) marcas.add("Jura");
-            if(checkBoxKrups.isSelected()) marcas.add("Krups");
-            if(checkBoxPhilips.isSelected()) marcas.add("Philips");
-            if(checkBoxSaeco.isSelected()) marcas.add("Saeco");
-            if(checkBoxSeverin.isSelected()) marcas.add("Severin");
-            if(checkBoxUfesa.isSelected()) marcas.add("Ufesa");
-            if(checkBoxTaurus.isSelected()) marcas.add("Taurus");
+            if (checkBoxBosch.isSelected()) marcas.add("Bosch");
+            if (checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
+            if (checkBoxJura.isSelected()) marcas.add("Jura");
+            if (checkBoxKrups.isSelected()) marcas.add("Krups");
+            if (checkBoxPhilips.isSelected()) marcas.add("Philips");
+            if (checkBoxSaeco.isSelected()) marcas.add("Saeco");
+            if (checkBoxSeverin.isSelected()) marcas.add("Severin");
+            if (checkBoxUfesa.isSelected()) marcas.add("Ufesa");
+            if (checkBoxTaurus.isSelected()) marcas.add("Taurus");
 
             Map<String, Cafeter> map = Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected());
-
             tableViewArticulos.getItems().addAll(map.values());
-
             Constants.getDriver().close();
             disableUI(nodes, false);
         });

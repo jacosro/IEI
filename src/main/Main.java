@@ -40,73 +40,38 @@ public class Main extends Application {
     }
 
     public static Map<String, Cafeter> buscar(String articulo, List<String> filtros, boolean selCorteIngles, boolean selFnac) {
-        final List<Cafeter> productsCorteIngles = new ArrayList<>();
-        final List<Cafeter> productsFnac = new ArrayList<>();
-        Map<String, Cafeter> map = new ConcurrentHashMap<>();
-
-        final Semaphore semaphore = new Semaphore(-1);
+        Map<String, Cafeter> map = new HashMap<>();
 
         WebDriver driver = Constants.getDriver();
 
         if (selCorteIngles) {
-            Thread ci = new Thread(() -> {
-                Web corteIngles = CorteIngles.getInstance();
+            Web corteIngles = CorteIngles.getInstance();
 
-                corteIngles.setWebDriver(driver);
-                corteIngles.webSearch(articulo);
-                corteIngles.setFilters(filtros);
+            corteIngles.setWebDriver(driver);
+            corteIngles.webSearch(articulo);
+            corteIngles.setFilters(filtros);
 
-                for (Cafeter c : corteIngles.findProducts()) {
-                    if (map.containsKey(c.getEan())) {
-                        Cafeter cafeter = map.get(c.getEan());
-                        cafeter.setCorteIngles(true);
-                        cafeter.setPrecioCI(c.getPrecioCI());
-                    } else {
-                        map.put(c.getEan(), c);
-                    }
-                }
-
-                System.out.println(productsCorteIngles);
-                semaphore.release();
-            });
-
-            ci.setName("Corte Ingles");
-            ci.start();
+            for (Cafeter cafeter : corteIngles.findProducts()) {
+                map.put(cafeter.getEan(), cafeter);
+            }
         }
 
         if (selFnac) {
-            Thread fn = new Thread(() -> {
-                Web fnac = Fnac.getInstance();
+            Web fnac = Fnac.getInstance();
 
-                fnac.setWebDriver(driver);
-                fnac.webSearch(articulo);
-                fnac.setFilters();
-                productsFnac.addAll(fnac.findProducts());
+            fnac.setWebDriver(driver);
+            fnac.webSearch(articulo);
+            fnac.setFilters();
 
-                for (Cafeter c : fnac.findProducts()) {
-                    if (map.containsKey(c.getEan())) {
-                        Cafeter cafeter = map.get(c.getEan());
-                        cafeter.setFnac(true);
-                        cafeter.setPrecioF(c.getPrecioF());
-                    } else {
-                        map.put(c.getEan(), c);
-                    }
+            for (Cafeter c : fnac.findProducts()) {
+                if (map.containsKey(c.getEan())) {
+                    Cafeter cafeter = map.get(c.getEan());
+                    cafeter.setFnac(true);
+                    cafeter.setPrecioF(c.getPrecioF());
+                } else {
+                    map.put(c.getEan(), c);
                 }
-
-                System.out.println(productsFnac);
-                semaphore.release();
-            });
-
-            fn.setName("Fnac");
-            fn.start();
-        }
-
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println(map.values());
+            }
         }
 
         return map;
