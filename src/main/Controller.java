@@ -19,6 +19,7 @@ import org.openqa.selenium.WebDriver;
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class Controller {
 
@@ -80,10 +81,13 @@ public class Controller {
             if (checkBoxUfesa.isSelected()) marcas.add("Ufesa");
             if (checkBoxTaurus.isSelected()) marcas.add("Taurus");
 
-            Map<String, Cafeter> map = Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected());
-            tableViewArticulos.getItems().addAll(map.values());
-            Constants.getDriver().close();
-            disableUI(nodes, false);
+            CompletableFuture.supplyAsync(() ->
+                    Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected())
+            ).thenAccept(map -> {
+                tableViewArticulos.getItems().addAll(map.values());
+                Constants.getDriver().quit();
+                disableUI(nodes, false);
+            });
         });
 
     }
