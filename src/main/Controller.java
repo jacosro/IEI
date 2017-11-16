@@ -67,7 +67,6 @@ public class Controller {
             tableViewArticulos.getItems().clear();
             List<Node> nodes = new ArrayList<>();
             addNodes(nodes);
-            disableUI(nodes, true);
 
             String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
 
@@ -80,6 +79,10 @@ public class Controller {
             if (checkBoxSeverin.isSelected()) marcas.add("Severin");
             if (checkBoxUfesa.isSelected()) marcas.add("Ufesa");
             if (checkBoxTaurus.isSelected()) marcas.add("Taurus");
+
+            disableUI(nodes, true);
+
+            System.out.println(marcas.size());
 
             CompletableFuture.supplyAsync(() ->
                     Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected())

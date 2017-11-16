@@ -52,11 +52,28 @@ public class Fnac extends Web {
     public void setFilters(List<String> filters) {
         super.setFilters(filters);
 
+        List <WebElement> more = webDriver.findElements(By.xpath(".//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/button/span[1]"));
+        if(!more.isEmpty()) {
+            JavascriptExecutor jse = (JavascriptExecutor) webDriver;
+            jse.executeScript("window.scrollBy(0,300)", "");
+            more.get(0).click();
+        }
+
+        /*List<WebElement> a = webDriver.findElements(By.xpath("./*//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/div/a"));
+        for (int i = 0; i < a.size(); i++) {
+            System.out.println(a.get(i).getAttribute("class"));
+        }*/
+
+        //filters.set(filters.indexOf("De'Longhi"), "Delonghi");
+
         Map<String, By> brands = gatherBrands();
         for(String f : filters) {
+            System.out.println("filter:" + f);
             for(Map.Entry<String, By> b : brands.entrySet()) {
-                if(Objects.equals(b.getKey(),f )) {
-                    webDriver.findElement(b.getValue()).click();
+                if(b.getKey().equals(f)) {
+                    System.out.println(b.getKey().toString());
+                    //webDriver.findElement(b.getValue()).click();
+                    webDriver.findElement(By.xpath(b.getValue().toString() + "/label")).click();
                     Waits.waitForPageLoad(webDriver);
                     break;
                 }
@@ -71,10 +88,12 @@ public class Fnac extends Web {
             try {
                 By by = By.xpath(".//*[@id='col_gauche']/div/div[2]/div[3]/div[2]/div/a[" + i + "]");
                 WebElement webElement = webDriver.findElement(by);
-                if (webElement.getAttribute("class").equals("Filters-choice isActive")) {
+                if (webElement.getAttribute("class").equals("Filters-choice  isActive")) {
                     res.put(webElement.getAttribute("title"), by);
                 }
+
             } catch (NoSuchElementException e) {
+                System.out.println(res.keySet());
                 return res;
             }
         }

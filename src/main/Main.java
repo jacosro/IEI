@@ -61,7 +61,7 @@ public class Main extends Application {
 
             fnac.setWebDriver(driver);
             fnac.webSearch(articulo);
-            fnac.setFilters();
+            fnac.setFilters(filtros);
 
             for (Cafeter c : fnac.findProducts()) {
                 if (map.containsKey(c.getEan())) {
