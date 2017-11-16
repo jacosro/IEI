@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 public class Controller {
 
@@ -72,15 +74,11 @@ public class Controller {
             if(checkBoxUfesa.isSelected()) marcas.add("Ufesa");
             if(checkBoxTaurus.isSelected()) marcas.add("Taurus");
 
-            Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected());
+            Map<String, Cafeter> map = Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected());
 
-            if (checkBoxFnac.isSelected()) {
+            tableViewArticulos.getItems().addAll(map.values());
 
-            }
-
-            tableViewArticulos.getItems().addAll(cafeterMap.values());
-
-            driver.close();
+            Constants.getDriver().close();
         });
 
 
@@ -112,6 +110,7 @@ public class Controller {
     void buttonBuscarClick(ActionEvent event) {
         System.out.println("Hello World!");
     }
+
 
 
 }

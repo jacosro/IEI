@@ -12,6 +12,7 @@ import main.web.Fnac;
 import main.web.Web;
 import org.openqa.selenium.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,42 +40,75 @@ public class Main extends Application {
     }
 
     public static Map<String, Cafeter> buscar(String articulo, List<String> filtros, boolean selCorteIngles, boolean selFnac) {
-        final List<Cafeter> productsCorteIngles;
-        final List<Cafeter> productsFnac;
-        Map<String, Cafeter> cafeterMap = new HashMap<>();
+        final List<Cafeter> productsCorteIngles = new ArrayList<>();
+        final List<Cafeter> productsFnac = new ArrayList<>();
+        Map<String, Cafeter> map = new ConcurrentHashMap<>();
+
+        final Semaphore semaphore = new Semaphore(-1);
 
         WebDriver driver = Constants.getDriver();
 
         if (selCorteIngles) {
-
-            CompletableFuture<List<Cafeter>> completableFuture = CompletableFuture.supplyAsync(() -> {
+            Thread ci = new Thread(() -> {
                 Web corteIngles = CorteIngles.getInstance();
 
                 corteIngles.setWebDriver(driver);
                 corteIngles.webSearch(articulo);
                 corteIngles.setFilters(filtros);
-                productsCorteIngles = corteIngles.findProducts();
 
-                for(Cafeter c: productsCorteIngles) {
-                    cafeterMap.put(c.getEan(), c);
+                for (Cafeter c : corteIngles.findProducts()) {
+                    if (map.containsKey(c.getEan())) {
+                        Cafeter cafeter = map.get(c.getEan());
+                        cafeter.setCorteIngles(true);
+                        cafeter.setPrecioCI(c.getPrecioCI());
+                    } else {
+                        map.put(c.getEan(), c);
+                    }
                 }
+
                 System.out.println(productsCorteIngles);
+                semaphore.release();
             });
 
-            new Thread().start();
+            ci.setName("Corte Ingles");
+            ci.start();
         }
 
         if (selFnac) {
-            Web fnac = Fnac.getInstance();
+            Thread fn = new Thread(() -> {
+                Web fnac = Fnac.getInstance();
 
-            fnac.setWebDriver(driver);
-            fnac.webSearch(articulo);
-            fnac.setFilters();
-            productsFnac = fnac.findProducts();
-            for (Cafeter c: productsFnac) {
-                cafeterMap.put(c.getEan(), c);
-            }
-            System.out.println(productsFnac);
+                fnac.setWebDriver(driver);
+                fnac.webSearch(articulo);
+                fnac.setFilters();
+                productsFnac.addAll(fnac.findProducts());
+
+                for (Cafeter c : fnac.findProducts()) {
+                    if (map.containsKey(c.getEan())) {
+                        Cafeter cafeter = map.get(c.getEan());
+                        cafeter.setFnac(true);
+                        cafeter.setPrecioF(c.getPrecioF());
+                    } else {
+                        map.put(c.getEan(), c);
+                    }
+                }
+
+                System.out.println(productsFnac);
+                semaphore.release();
+            });
+
+            fn.setName("Fnac");
+            fn.start();
         }
+
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println(map.values());
+        }
+
+        return map;
     }
 }

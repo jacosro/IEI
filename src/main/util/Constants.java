@@ -1,5 +1,6 @@
 package main.util;
 
+import main.web.Web;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -19,8 +20,12 @@ public class Constants {
 
     static final String GECKO_PATH = "/home/jacosro/Desktop/geckodriver";
 
+    static WebDriver driver;
+
     public static WebDriver getDriver() {
-        WebDriver driver;
+
+        if (driver != null)
+            return driver;
 
         if (BROWSER == FIREFOX) {
             System.setProperty("webdriver.firefox.marionette", GECKO_PATH);
