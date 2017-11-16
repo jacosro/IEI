@@ -12,7 +12,7 @@ public class Cafeter {
     private SimpleStringProperty precioF;
 
     private boolean corteIngles;
-    private boolean mediaMarkt;
+    private boolean fnac;
     private String url;
 
     public Cafeter(String modelo, String marca) {
@@ -22,7 +22,7 @@ public class Cafeter {
         this.precioF = new SimpleStringProperty("-");
 
         this.corteIngles = false;
-        this.mediaMarkt = false;
+        this.fnac = false;
     }
 
     public String getModelo() {
@@ -81,12 +81,12 @@ public class Cafeter {
         this.corteIngles = corteIngles;
     }
 
-    public boolean isMediaMarkt() {
-        return mediaMarkt;
+    public boolean isFnac() {
+        return fnac;
     }
 
-    public void setMediaMarkt(boolean mediaMarkt) {
-        this.mediaMarkt = mediaMarkt;
+    public void setFnac(boolean fnac) {
+        this.fnac = fnac;
     }
 
     public String getUrl() {

@@ -98,8 +98,12 @@ public class Controller {
 
                     fnac.setWebDriver(driver);
                     fnac.webSearch(selectedArticulo);
-                    //fnac.setFilters();
+                    fnac.setFilters(marcas);
                     products = fnac.findProducts();
+
+                    for (Cafeter c: products) {
+                        tableViewArticulos.getItems().add(c);
+                    }
                 }
 
                 driver.close();

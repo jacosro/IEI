@@ -64,31 +64,45 @@ public class Fnac extends Web {
 
         List<Cafeter> seleccion = new ArrayList<>(max);
 
-        while (seleccion.size() < max) {
+        while (seleccion.size() < 1) {
             try {
-                for (int i = 1; i < 20; i++) {
-                    WebElement elementName = webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[1]/a"));
-                    WebElement elementMark = webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[2]/span/a"));
+                for (int i = 1; i < 5; i++) {
                     WebElement elementPrice = webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[3]/div/div[2]/div/div[1]/a/strong"));
+                    String price = elementPrice.getText();
+
+                    webDriver.get(webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[1]/a")).getAttribute("href"));
+                    Waits.waitForPageLoad(webDriver);
+
+                    WebElement elementName = webDriver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/h1/span"));
+                    List<WebElement> elementMark = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[1]/span[2]/span"));
+                    List<WebElement> elementEAN = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[3]/span[2]/span"));
+
                     //String json = element.getAttribute("data-json");
                     //JSONObject jsonObj = new JSONObject(json);
 
-                    String price = elementPrice.getText();
-                    if(price.isEmpty()) price = "No disponible";
+                    if(price.isEmpty()) {
+                        price = "No Disponible";
+                    }
 
-                    Cafeter c = new Cafeter(elementName.getText(), elementMark.getText());
+                    if(elementMark.isEmpty()) {
+                        elementMark.add(webDriver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/div[2]/span[2]/a")));
+                    }
+
+                    Cafeter c = new Cafeter(elementName.getText(), elementMark.get(0).getText());
+
                     c.setPrecioF(price);
-                    //c.setPrecioCI(price);
-                    //c.setCorteIngles(true);
-                    //seleccion.add(c);
-                    System.out.println(c.toString());
+                    c.setFnac(true);
+                    seleccion.add(c);
+
+                    webDriver.navigate().back();
+                    Waits.waitForPageLoad(webDriver);
                 }
-                WebElement nextPage = webDriver.findElement(By.xpath(".//*[@id='product-list']/div[3]/ul/li[5]/a"));
+                WebElement nextPage = webDriver.findElement(By.className("prevnext actionNext"));
                 nextPage.click();
                 Waits.waitForPageLoad(webDriver);
             } catch (NoSuchElementException e) {
-                // Only thrown when there are less than 24 products in last page. End loop.
-                break;
+                // Only thrown when there are less than 20 products in last page. End loop.
+                return seleccion;
             }
         }
         state = GOT_PRODUCTS;
