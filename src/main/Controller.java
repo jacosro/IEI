@@ -13,8 +13,7 @@ import main.web.Web;
 import org.openqa.selenium.WebDriver;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Controller {
 
@@ -63,7 +62,10 @@ public class Controller {
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
-                List<Cafeter> products;
+                List<Cafeter> productsCorteIngles = new ArrayList<>();
+                List<Cafeter> productsFnac = new ArrayList<>();
+                List<Cafeter> products = new ArrayList<>();
+                Map<String, Cafeter> cafeterMap = new HashMap<>();
 
                 tableViewArticulos.getItems().clear();
 
@@ -80,31 +82,37 @@ public class Controller {
 
                 WebDriver driver = Constants.getDriver();
 
-                if(checkBoxCorteIngles.isSelected()) {
+                if (checkBoxCorteIngles.isSelected()) {
                     Web corteIngles = CorteIngles.getInstance();
 
                     corteIngles.setWebDriver(driver);
                     corteIngles.webSearch(selectedArticulo);
                     corteIngles.setFilters(marcas);
-                    products = corteIngles.findProducts();
-
-                    for (Cafeter c: products) {
-                        tableViewArticulos.getItems().add(c);
+                    productsCorteIngles = corteIngles.findProducts();
+                    for(Cafeter c: productsCorteIngles) {
+                        cafeterMap.put(c.getEan(), c);
                     }
+                    System.out.println(productsCorteIngles);
                 }
 
-                if(checkBoxFnac.isSelected()) {
+                if (checkBoxFnac.isSelected()) {
                     Web fnac = Fnac.getInstance();
 
                     fnac.setWebDriver(driver);
                     fnac.webSearch(selectedArticulo);
-                    fnac.setFilters(marcas);
-                    products = fnac.findProducts();
-
-                    for (Cafeter c: products) {
-                        tableViewArticulos.getItems().add(c);
+                    fnac.setFilters();
+                    productsFnac = fnac.findProducts();
+                    for (Cafeter c: productsFnac) {
+                        cafeterMap.put(c.getEan(), c);
                     }
+                    System.out.println(productsFnac);
                 }
+
+
+
+
+
+                tableViewArticulos.getItems().addAll(cafeterMap.values());
 
                 driver.close();
             }

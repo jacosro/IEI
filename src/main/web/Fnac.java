@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +47,11 @@ public class Fnac extends Web {
 
     @Override
     public void setFilters(String... filter) {
-        super.setFilters(filter);
+        setFilters(Arrays.asList(filter));
+    }
+
+    public void setFilters(List<String> filters) {
+        super.setFilters(filters);
     }
 
     @Override
@@ -64,21 +69,17 @@ public class Fnac extends Web {
 
         List<Cafeter> seleccion = new ArrayList<>(max);
 
-        while (seleccion.size() < 1) {
+        while (seleccion.size() < max) {
             try {
                 for (int i = 1; i < 5; i++) {
-                    WebElement elementPrice = webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[3]/div/div[2]/div/div[1]/a/strong"));
-                    String price = elementPrice.getText();
-
                     webDriver.get(webDriver.findElement(By.xpath(".//*[@id='dontTouchThisDiv']/ul/li[" + i + "]/div/div[2]/div/p[1]/a")).getAttribute("href"));
                     Waits.waitForPageLoad(webDriver);
 
                     WebElement elementName = webDriver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/h1/span"));
                     List<WebElement> elementMark = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[1]/span[2]/span"));
                     List<WebElement> elementEAN = webDriver.findElements(By.xpath(".//*[@id='specifications']/div[2]/ul/li[3]/span[2]/span"));
-
-                    //String json = element.getAttribute("data-json");
-                    //JSONObject jsonObj = new JSONObject(json);
+                    WebElement elementPrice = webDriver.findElement(By.className("product-price"));
+                    String price = elementPrice.getText().replaceAll("\\s","");
 
                     if(price.isEmpty()) {
                         price = "No Disponible";
@@ -88,11 +89,17 @@ public class Fnac extends Web {
                         elementMark.add(webDriver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/div[2]/span[2]/a")));
                     }
 
-                    Cafeter c = new Cafeter(elementName.getText(), elementMark.get(0).getText());
-
-                    c.setPrecioF(price);
-                    c.setFnac(true);
-                    seleccion.add(c);
+                    if(!elementEAN.isEmpty()) {
+                        Cafeter c = new Cafeter(elementName.getText(), elementMark.get(0).getText(), elementEAN.get(0).getText());
+                        c.setPrecioF(price);
+                        c.setFnac(true);
+                        seleccion.add(c);
+                    } else {
+                        Cafeter c = new Cafeter(elementName.getText(), elementMark.get(0).getText());
+                        c.setPrecioF(price);
+                        c.setFnac(true);
+                        seleccion.add(c);
+                    }
 
                     webDriver.navigate().back();
                     Waits.waitForPageLoad(webDriver);
@@ -102,11 +109,13 @@ public class Fnac extends Web {
                 Waits.waitForPageLoad(webDriver);
             } catch (NoSuchElementException e) {
                 // Only thrown when there are less than 20 products in last page. End loop.
-                return seleccion;
+                break;
             }
         }
         state = GOT_PRODUCTS;
         products = seleccion;
         return products;
     }
+
+
 }
