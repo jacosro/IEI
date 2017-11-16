@@ -58,74 +58,36 @@ public class Controller {
 
         startTable();
 
-        buttonBuscar.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-            @Override
-            public void handle(javafx.event.ActionEvent event) {
-                String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
-                List<Cafeter> productsCorteIngles = new ArrayList<>();
-                List<Cafeter> productsFnac = new ArrayList<>();
-                List<Cafeter> products = new ArrayList<>();
-                Map<String, Cafeter> cafeterMap = new HashMap<>();
+        buttonBuscar.setOnAction(event -> {
+            tableViewArticulos.getItems().clear();
+            String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
 
-                tableViewArticulos.getItems().clear();
+            if(checkBoxBosch.isSelected()) marcas.add("Bosch");
+            if(checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
+            if(checkBoxJura.isSelected()) marcas.add("Jura");
+            if(checkBoxKrups.isSelected()) marcas.add("Krups");
+            if(checkBoxPhilips.isSelected()) marcas.add("Philips");
+            if(checkBoxSaeco.isSelected()) marcas.add("Saeco");
+            if(checkBoxSeverin.isSelected()) marcas.add("Severin");
+            if(checkBoxUfesa.isSelected()) marcas.add("Ufesa");
+            if(checkBoxTaurus.isSelected()) marcas.add("Taurus");
 
-                if(checkBoxBosch.isSelected()) marcas.add("Bosch");
-                if(checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
-                if(checkBoxJura.isSelected()) marcas.add("Jura");
-                if(checkBoxKrups.isSelected()) marcas.add("Krups");
-                if(checkBoxPhilips.isSelected()) marcas.add("Philips");
-                if(checkBoxSaeco.isSelected()) marcas.add("Saeco");
-                if(checkBoxSeverin.isSelected()) marcas.add("Severin");
-                if(checkBoxUfesa.isSelected()) marcas.add("Ufesa");
-                if(checkBoxTaurus.isSelected()) marcas.add("Taurus");
+            Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected());
 
+            if (checkBoxFnac.isSelected()) {
 
-                WebDriver driver = Constants.getDriver();
-
-                if (checkBoxCorteIngles.isSelected()) {
-                    Web corteIngles = CorteIngles.getInstance();
-
-                    corteIngles.setWebDriver(driver);
-                    corteIngles.webSearch(selectedArticulo);
-                    corteIngles.setFilters(marcas);
-                    productsCorteIngles = corteIngles.findProducts();
-                    for(Cafeter c: productsCorteIngles) {
-                        cafeterMap.put(c.getEan(), c);
-                    }
-                    System.out.println(productsCorteIngles);
-                }
-
-                if (checkBoxFnac.isSelected()) {
-                    Web fnac = Fnac.getInstance();
-
-                    fnac.setWebDriver(driver);
-                    fnac.webSearch(selectedArticulo);
-                    fnac.setFilters();
-                    productsFnac = fnac.findProducts();
-                    for (Cafeter c: productsFnac) {
-                        cafeterMap.put(c.getEan(), c);
-                    }
-                    System.out.println(productsFnac);
-                }
-
-
-
-
-
-                tableViewArticulos.getItems().addAll(cafeterMap.values());
-
-                driver.close();
             }
+
+            tableViewArticulos.getItems().addAll(cafeterMap.values());
+
+            driver.close();
         });
 
 
     }
 
     private void startTable() {
-        tableViewArticulos.setEditable(true);
-        Cafeter c = new Cafeter("Espresso GOteante y suputamadre", "De'Corti");
-
-        ObservableList<Cafeter> data = FXCollections.observableArrayList();
+        tableViewArticulos.setEditable(false);
 
         TableColumn firstNameCol = new TableColumn("Modelo");
         firstNameCol.setMinWidth(300);
@@ -150,5 +112,6 @@ public class Controller {
     void buttonBuscarClick(ActionEvent event) {
         System.out.println("Hello World!");
     }
+
 
 }
