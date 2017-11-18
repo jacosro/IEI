@@ -34,6 +34,7 @@ public class CorteIngles extends Web {
         super.webSearch(search);
 
         WebElement buscador = webDriver.findElement(By.id("search-box"));
+        buscador.clear();
         buscador.sendKeys(search + Keys.ENTER);
         Waits.waitForPageLoad(webDriver);
         state = SEARCH_COMPLETE;
@@ -92,7 +93,7 @@ public class CorteIngles extends Web {
     }
 
     @Override
-    public List<Cafeter> findProducts() {
+    public List<Cafeter> findProducts(String... opciones) {
         super.findProducts();
 
         WebElement totalLabel = webDriver.findElement(By.xpath(".//*[@id='product-list-total']"));

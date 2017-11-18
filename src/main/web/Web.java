@@ -41,7 +41,7 @@ public abstract class Web {
             throw new RuntimeException("Illegal state: " + state);
     }
 
-    public List<Cafeter> findProducts() {
+    public List<Cafeter> findProducts(String... opciones) {
         if (state < SEARCH_COMPLETE)
             throw new RuntimeException("Illegal state: " + state);
         return products;

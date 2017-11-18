@@ -12,10 +12,7 @@ import main.web.Fnac;
 import main.web.Web;
 import org.openqa.selenium.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -39,7 +36,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static Map<String, Cafeter> buscar(String articulo, List<String> filtros, boolean selCorteIngles, boolean selFnac) {
+    public static Collection<Cafeter> buscar(String articulo, List<String> filtros, boolean selCorteIngles, boolean selFnac) {
         Map<String, Cafeter> map = new HashMap<>();
 
         WebDriver driver = Constants.getDriver();
@@ -56,24 +53,29 @@ public class Main extends Application {
             }
         }
 
+        System.out.println(map.keySet());
+
         if (selFnac) {
             Web fnac = Fnac.getInstance();
 
             fnac.setWebDriver(driver);
-            fnac.webSearch(articulo);
-            fnac.setFilters(filtros);
 
-            for (Cafeter c : fnac.findProducts()) {
-                if (map.containsKey(c.getEan())) {
-                    Cafeter cafeter = map.get(c.getEan());
-                    cafeter.setFnac(true);
-                    cafeter.setPrecioF(c.getPrecioF());
-                } else {
-                    map.put(c.getEan(), c);
+            for (String filter : filtros) {
+                fnac.webSearch(articulo + " " + filter);
+
+                for (Cafeter c : fnac.findProducts(filter)) {
+                    if (map.containsKey(c.getEan())) {
+                        Cafeter cafeter = map.get(c.getEan());
+                        cafeter.setFnac(true);
+                        cafeter.setPrecioF(c.getPrecioF());
+                    } else {
+                        map.put(c.getEan(), c);
+                    }
                 }
             }
         }
+        System.out.println(map.keySet());
 
-        return map;
+        return map.values();
     }
 }

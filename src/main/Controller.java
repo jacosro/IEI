@@ -71,7 +71,10 @@ public class Controller {
             String selectedArticulo = comboBoxArticulo.getSelectionModel().getSelectedItem().toString();
 
             if (checkBoxBosch.isSelected()) marcas.add("Bosch");
-            if (checkBoxDeLonghi.isSelected()) marcas.add("De'Longhi");
+            if (checkBoxDeLonghi.isSelected()) {
+                marcas.add("De'Longhi"); // Corte Ingles
+                marcas.add("Delonghi"); // fnac
+            }
             if (checkBoxJura.isSelected()) marcas.add("Jura");
             if (checkBoxKrups.isSelected()) marcas.add("Krups");
             if (checkBoxPhilips.isSelected()) marcas.add("Philips");
@@ -86,9 +89,9 @@ public class Controller {
 
             CompletableFuture.supplyAsync(() ->
                     Main.buscar(selectedArticulo, marcas, checkBoxCorteIngles.isSelected(), checkBoxFnac.isSelected())
-            ).thenAccept(map -> {
-                tableViewArticulos.getItems().addAll(map.values());
-                Constants.getDriver().quit();
+            ).thenAccept(res -> {
+                tableViewArticulos.getItems().addAll(res);
+                Constants.closeDriver();
                 disableUI(nodes, false);
             });
         });

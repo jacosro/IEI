@@ -42,4 +42,9 @@ public class Constants {
         }
         return driver;
     }
+
+    public static void closeDriver() {
+        driver.close();
+        driver = null;
+    }
 }
